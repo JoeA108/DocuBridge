@@ -13,7 +13,6 @@ def upload_file():
         return redirect(url_for("index"))
 
     file = request.files["excel_file"]
-    user_question = request.form.get("user_question", "")
 
     if file.filename == "":
         return redirect(url_for("index"))
