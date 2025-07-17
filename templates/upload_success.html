@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Successful - DocuBridge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid #1a1a1a;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #1a1a1a;
+            font-size: 1.5em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 30px 0 20px 0;
+            padding: 15px;
+            background: #f8f8f8;
+            border: 2px solid #1a1a1a;
+        }
+
+        .btn {
+            background: #1a1a1a;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .btn:hover {
+            background: #333333;
+        }
+
+        .alert {
+            padding: 16px;
+            margin: 20px 0;
+            border: 2px solid #1a1a1a;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #e8e8e8;
+            color: #1a1a1a;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border: 2px solid #1a1a1a;
+            font-size: 14px;
+        }
+
+        .table th, .table td {
+            border: 1px solid #1a1a1a;
+            padding: 12px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .table th {
+            background: #1a1a1a;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 12px;
+        }
+
+        .table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        .table tr:hover {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="DocuBridge Logo" class="logo">
+            <h1>Upload Successful</h1>
+        </div>
+        <div class="alert alert-success">Your file has been uploaded successfully!</div>
+        <h2>Data Summary</h2>
+        <div class="data-container">
+            {{ table_html|safe }}
+        </div>
+        <a href="/" class="btn">Return to Home</a>
+    </div>
+</body>
+</html>

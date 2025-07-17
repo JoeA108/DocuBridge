@@ -23,7 +23,7 @@ def upload_file():
     if file and file.filename.lower().endswith((".xlsx", ".xls")):
         flash(f"File '{file.filename}' uploaded successfully!")
         flash(f"Question received: '{user_question}'")
-        return redirect(url_for("index"))
+        return render_template('upload_success.html')
     else:
         flash("Invalid file format. Please upload an Excel file.")
         return redirect(url_for("index")) 
