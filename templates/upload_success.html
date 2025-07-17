@@ -8,7 +8,7 @@
     </div>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Successful - ModelMind</title>
+    <title>Upload Status - ModelMind</title>
     <style>
         body {
             text-align: center;
@@ -49,8 +49,14 @@
             border: 1px solid #ddd;
             font-weight: bold;
             border-radius: 4px;
+        }
+        .alert.success {
             background-color: #d4edda;
             color: #155724;
+        }
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
         }
         .btn {
             background-color: #3b3575;
@@ -78,18 +84,43 @@
             font-size: 1.2em;
             font-weight: bold;
         }
+        .details {
+            margin-top: 15px;
+            text-align: left;
+            padding: 0 20px;
+            color: #333;
+        }
+        .details p {
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
     <h1>ModelMind</h1>
 
     <div class="content-container">
-        <div class="alert">Your file has been uploaded successfully!</div>
-        
-        <div class="chatbot-placeholder">
-            Chatbot: Coming Soon
-        </div>
-
+        {% if error %}
+            <div class="alert error">{{ message }}</div>
+            {% if filename %}
+                <div class="details">
+                    <p><strong>Attempted File:</strong> {{ filename }}</p>
+                </div>
+            {% endif %}
+            {% if question %}
+                <div class="details">
+                    <p><strong>Provided Question:</strong> {{ question }}</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="alert success">{{ message }}</div>
+            <div class="details">
+                <p><strong>File Name:</strong> {{ filename }}</p>
+                <p><strong>Your Question:</strong> {{ question }}</p>
+            </div>
+            <div class="chatbot-placeholder">
+                Chatbot: Coming Soon
+            </div>
+        {% endif %}
         <a href="/" class="btn">Return to Home</a>
     </div>
 </body>
