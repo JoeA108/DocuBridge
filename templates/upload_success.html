@@ -3,132 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Successful - DocuBridge</title>
+    <title>Upload Successful - ModelMind</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #ffffff;
-            min-height: 100vh;
-            color: #1a1a1a;
-            line-height: 1.6;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
         }
-
-        .container {
+        .logo-container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 2px solid #1a1a1a;
+            padding: 0 20px;
         }
 
         .logo {
-            width: 200px;
-            height: auto;
-            margin-bottom: 15px;
+            text-align: center;
+            height: 120px;
+            width: auto;
+            transition: all 0.3s ease;
         }
-
+        .content-container {
+            background-color: #9900FF;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
         h1 {
-            color: #1a1a1a;
+            color: black;
             font-size: 2.2em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 20px;
         }
-
         h2 {
-            color: #1a1a1a;
+            color: black;
             font-size: 1.5em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 30px 0 20px 0;
             padding: 15px;
-            background: #f8f8f8;
-            border: 2px solid #1a1a1a;
+            background: #e0e0e0;
+            border: 2px solid #8f1f17;
+            border-radius: 8px;
         }
-
         .btn {
-            background: #1a1a1a;
-            color: white;
-            padding: 15px 30px;
+            background-color: #8f1f17;
+            color: black;
+            padding: 10px 20px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             transition: all 0.2s ease;
-            font-family: inherit;
             text-decoration: none;
             display: inline-block;
             margin: 10px 0;
         }
-
         .btn:hover {
-            background: #333333;
+            background-color: #69150f;
         }
-
         .alert {
             padding: 16px;
             margin: 20px 0;
-            border: 2px solid #1a1a1a;
+            border: 2px solid #8f1f17;
             font-weight: 500;
+            border-radius: 4px;
         }
-
         .alert-success {
             background: #e8e8e8;
             color: #1a1a1a;
         }
-
         .table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            border: 2px solid #1a1a1a;
+            border: 2px solid #8f1f17;
             font-size: 14px;
         }
-
         .table th, .table td {
-            border: 1px solid #1a1a1a;
+            border: 1px solid #8f1f17;
             padding: 12px 8px;
             text-align: left;
             vertical-align: top;
         }
-
         .table th {
-            background: #1a1a1a;
+            background: #8f1f17;
             color: #ffffff;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 12px;
         }
-
         .table tr:nth-child(even) {
             background: #f8f8f8;
         }
-
         .table tr:hover {
             background: #e0e0e0;
         }
-
         @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
-
             h1 {
                 font-size: 1.8em;
             }
@@ -136,11 +115,14 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="DocuBridge Logo" class="logo">
-            <h1>Upload Successful</h1>
-        </div>
+    <div class="logo-container">
+        <a href="/">
+            <img src="static/logo.png" alt="DocuBridge Logo" class="logo">
+        </a>
+    </div>
+    <h1>ModelMind</h1>
+
+    <div class="content-container">
         <div class="alert alert-success">Your file has been uploaded successfully!</div>
         <h2>Data Summary</h2>
         <div class="data-container">
