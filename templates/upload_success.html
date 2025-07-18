@@ -123,5 +123,19 @@
         {% endif %}
         <a href="/" class="btn">Return to Home</a>
     </div>
+    <div class="content-container">
+        {% if sheet_names %}
+            <h3>Available Sheets:</h3>
+            <ul>
+                {% for sheet in sheet_names %}
+                    <li>{{ sheet }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if preview_data %}
+            <h3>Data Preview:</h3>
+            <div>{{ preview_data | safe }}</div>
+        {% endif %}
+    </div>
 </body>
 </html>

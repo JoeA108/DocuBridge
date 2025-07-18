@@ -1,8 +1,8 @@
+import pandas as pd
 from flask import Flask, redirect, render_template, request, url_for
 import os
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here" 
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 MAX_FILE_SIZE = 5 * 1024 * 1024 
 
@@ -38,7 +38,18 @@ def upload_file():
 
         print(f"File received: {file.filename}")
         print(f"Question received: {user_question}")
-        return render_template('upload_success.html', message=f"File received: {file.filename}. Question received: {user_question}", filename=file.filename, question=user_question, error=False)
+
+        try:
+            data = pd.read_excel(file)
+
+            sheet_names = pd.ExcelFile(file).sheet_names
+            preview_data = data.head()
+        
+            return render_template('upload_success.html', message=f"File received: {file.filename}. Question received: {user_question}", filename=file.filename, question=user_question, sheet_names=sheet_names, preview_data=preview_data.to_html(classes='data', header="true"), error=False)
+    
+        except Exception as e:
+            return render_template("upload_success.html", message=f"Error reading file: {str(e)}", filename=file.filename, question=user_question, error=True)
+    
     else:
         return render_template('upload_success.html', message="Invalid file type. Only .xlsx and .xls are allowed.", filename=file.filename if file else "", question=user_question, error=True)
 
