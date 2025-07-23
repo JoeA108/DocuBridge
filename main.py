@@ -23,7 +23,29 @@ MAX_FILE_SIZE = 5 * 1024 * 1024
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
+error_lookup={
+    "#N/A": "Not available",
+    "#VALUE!": "Invalid value",
+    "#REF!": "There is no reference",
+    "#Name?": "Can't find the name",
+    "#DIV/0!": "Division by zero",
+    "########": "Unable to display value",
+    "#NULL!": "Empty value",
+    "#NUM!":"Invalid number",
+    "#CALC!":"Calculation Error"
+}
+error_code_list=list(error_lookup.keys())
+def scan_for_error(df: pd.DataFrame):
+    error_string=""
+    values = df.to_numpy()
+    
+    for row_idx, row in enumerate(values):
+        for col_idx, value in enumerate(row):
+            if value in error_code_list:
+                error_desc=error_lookup[value]
+                error_string += "Row "+ str(row_idx)+ " Column " + str(col_idx) + " Contains the error: " + str(error_desc)
+    return error_string
+#need to integrate it to the prompt template
 @app.route("/")
 def index():
     return render_template("index.html")
