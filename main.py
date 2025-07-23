@@ -1,6 +1,20 @@
 import pandas as pd
 from flask import Flask, redirect, render_template, request, url_for
+import requests
 import os
+
+MODEL = "meta-llama/Llama-3.1-8B-Instruct:novita"
+
+API_URL = "https://router.huggingface.co/v1/chat/completions"
+
+headers = {
+    "Authorization": f"Bearer {os.environ['HF_TOKEN']}",
+}
+
+def query(payload):
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.json()
+
 
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
@@ -44,14 +58,25 @@ def upload_file():
 
             sheet_names = pd.ExcelFile(file).sheet_names
             preview_data = data.head()
-        
-            return render_template('upload_success.html', message=f"File received: {file.filename}. Question received: {user_question}", filename=file.filename, question=user_question, sheet_names=sheet_names, preview_data=preview_data.to_html(classes='data', header="true"), error=False)
-    
+
+            prompt = f"here is data: {preview_data} and here is a question about the data: {user_question}, keep your answer to 1 sentence. Just answer the question."
+            response = query({
+
+                "messages": [{"role": "user",
+                              "content": prompt}],
+
+                "model": MODEL
+
+            })
+            ai_response = response["choices"][0]["message"]["content"].replace("**", "").replace("*", "")
+
+            return render_template('upload_success.html', message=f"File received: {file.filename}. Question received: {user_question}", filename=file.filename, question=user_question, sheet_names=sheet_names, preview_data=preview_data.to_html(classes='data', header="true"), ai_response=ai_response, error=False)
+
         except Exception as e:
-            return render_template("upload_success.html", message=f"Error reading file: {str(e)}", filename=file.filename, question=user_question, error=True)
-    
+            return render_template("upload_success.html", message=f"Error reading file: {str(e)}", filename=file.filename, question=user_question, ai_response="Unavailable", error=True)
+
     else:
-        return render_template('upload_success.html', message="Invalid file type. Only .xlsx and .xls are allowed.", filename=file.filename if file else "", question=user_question, error=True)
+        return render_template('upload_success.html', message="Invalid file type. Only .xlsx and .xls are allowed.", filename=file.filename if file else "", question=user_question, ai_response="Unavailable", error=True)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

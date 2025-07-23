@@ -74,7 +74,7 @@
         .btn:hover {
             background-color: #2f2b5f;
         }
-        .chatbot-placeholder {
+        .chatbot {
             background-color: #f0f0f0;
             padding: 30px;
             border-radius: 8px;
@@ -117,8 +117,8 @@
                 <p><strong>File Name:</strong> {{ filename }}</p>
                 <p><strong>Your Question:</strong> {{ question }}</p>
             </div>
-            <div class="chatbot-placeholder">
-                Chatbot: Coming Soon
+            <div class="chatbot">
+                <p><strong>Chatbot:</strong> {{ ai_response }}</p>
             </div>
         {% endif %}
         <a href="/" class="btn">Return to Home</a>
@@ -128,7 +128,7 @@
             <h3>Available Sheets:</h3>
             <ul>
                 {% for sheet in sheet_names %}
-                    <li>{{ sheet }}</li>
+                    <li>{{ filename }}</li>
                 {% endfor %}
             </ul>
         {% endif %}

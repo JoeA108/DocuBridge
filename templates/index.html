@@ -1,103 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <div class="logo-container">
-      <a href="/">
-          <img src="static/logo.png" alt="DocuBridge Logo" class="logo">
-      </a>
-  </div>
-  <meta charset="utf-8">
-  <meta name ="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DocuBridge Project</title>
-  <style>
-    body {
-      text-align: center;
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f8f8f8;
-    }
-    .form-container {
-      background-color: #938ade;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input[type="file"], input[type="text"], textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    textarea {
-      height: 100px;
-      resize: vertical;
-    }
-    .submit-btn {
-      background-color: #3b3575;
-      color: #f0f0f0;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .submit-btn:hover {
-      background-color: #2f2b5f;
-    }
-    .file-note {
-      font-size: 12px;
-      color: #000;
-      margin-top: 5px;
-    }
-    }
-    .logo-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .logo {
+  <head>
+    <div class="logo-container">
+        <a href="/">
+            <img src="static/logo.png" alt="DocuBridge Logo" class="logo">
+        </a>
+    </div>
+    <meta charset="utf-8">
+    <meta name ="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuBridge Project</title>
+    <style>
+      body {
         text-align: center;
-        height: 120px;
-        width: auto;
-        transition: all 0.3s ease;
-    }
-  </style>
-</head>
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      .form-container {
+        background-color: #938ade;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="file"], input[type="text"], textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      textarea {
+        height: 100px;
+        resize: vertical;
+      }
+      .submit-btn {
+        background-color: #3b3575;
+        color: #f0f0f0;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .submit-btn:hover {
+        background-color: #2f2b5f;
+      }
+      .file-note {
+        font-size: 12px;
+        color: #000;
+        margin-top: 5px;
+      }
+      }
+      .logo-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+      }
 
-<body>
-  <h1>ModelMind</h1>
-  <p>Upload Excel financial models and ask questions about it, recieving AI-powered Answers.</p>
+      .logo {
+          text-align: center;
+          height: 120px;
+          width: auto;
+          transition: all 0.3s ease;
+      }
+    </style>
+  </head>
 
-  <div class="form-container">  
-    <h2>Upload Excel File & Ask Question</h2>
-    <form method="POST" action="/upload" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="excel_file">Upload Excel File</label>
-        <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
-        <div class="file-note">Accepted file types: .xlsx, .xls</div>
+  <body>
+    <h1>ModelMind</h1>
+    <p>Upload Excel financial models and ask questions about it, recieving AI-powered Answers.</p>
+
+    <div class="form-container">  
+      <h2>Upload Excel File & Ask Question</h2>
+      <form method="POST" action="/upload" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="excel_file">Upload Excel File</label>
+          <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+          <div class="file-note">Accepted file types: .xlsx, .xls</div>
+          </div>
+        <div class="form-group">
+          <label for="user_question">Your Question: </label>
+          <textarea id="user_question" name="user_question" placeholder="Enter your question about the Excel file here..." required></textarea>
         </div>
-      <div class="form-group">
-        <label for="user_question">Your Question: </label>
-        <textarea id="user_question" name="user_question" placeholder="Enter your question about the Excel file here..." required></textarea>
-      </div>
 
-      <button type="submit" class="submit-btn">Submit Question</button>
-    </form>
-  </div>
-
+        <button type="submit" class="submit-btn">Submit Question</button>
+      </form>
+    </div>
 </body>
 
 </html>
