@@ -60,61 +60,95 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 
+@app.route("/upload", methods=["POST"])
 def upload_file():
-    if "excel_file" not in request.files:
-        return render_template('upload_success.html', message="No file part in the request.", filename="", question="", error=True)
+    import traceback
+    try:
+        if "excel_file" not in request.files:
+            return render_template('upload_success.html', message="No file part in the request.", filename="", question="", error=True)
 
-    file = request.files["excel_file"]
-    user_question = request.form.get("user_question")
+        file = request.files["excel_file"]
+        user_question = request.form.get("user_question")
 
-    if file.filename == "":
-        return render_template('upload_success.html', message="No selected file.", filename="", question="", error=True)
+        if file.filename == "":
+            return render_template('upload_success.html', message="No selected file.", filename="", question="", error=True)
 
-    if not user_question:
-        return render_template('upload_success.html', message="No question provided.", filename="", question="", error=True)
+        if not user_question:
+            return render_template('upload_success.html', message="No question provided.", filename="", question="", error=True)
 
-    if file and allowed_file(file.filename):
-        file.seek(0, os.SEEK_END)
-        file_size = file.tell()
-        file.seek(0) 
+        if file and allowed_file(file.filename):
+            file.seek(0, os.SEEK_END)
+            file_size = file.tell()
+            file.seek(0) 
 
-        if file_size > MAX_FILE_SIZE:
-            return render_template('upload_success.html', message=f"File too large. Maximum size is {MAX_FILE_SIZE / (1024 * 1024):.0f} MB.", filename=file.filename, question=user_question, error=True)
+            if file_size > MAX_FILE_SIZE:
+                return render_template('upload_success.html', message=f"File too large. Maximum size is {MAX_FILE_SIZE / (1024 * 1024):.0f} MB.", filename=file.filename, question=user_question, error=True)
 
-        print(f"File received: {file.filename}")
-        print(f"Question received: {user_question}")
+            print(f"File received: {file.filename}")
+            print(f"Question received: {user_question}")
 
-        try:
             data = pd.read_excel(file)
-
             sheet_names = pd.ExcelFile(file).sheet_names
             preview_data = data.head()
 
             error_string = scan_for_error(preview_data)
-            
-            prompt = f"here is data: {preview_data} and here is a question about the data: {user_question}, keep your answer to 1 sentence. Just answer the question. Here are the following errors found in the data, mention these in your response: {error_string}, if there are no errors, just answer the question."
 
-            
+
+            trend_summary = ""
+            time_columns = [col for col in data.columns if "date" in col.lower() or "month" in col.lower() or "year" in col.lower()]
+
+            if time_columns:
+                time_col = time_columns[0]
+                try:
+                    data[time_col] = pd.to_datetime(data[time_col], errors="coerce")
+                    data = data.sort_values(by=time_col)
+
+                    numeric_cols = data.select_dtypes(include=["number"]).columns
+                    if len(numeric_cols) > 0:
+                        main_col = numeric_cols[0]
+                        start_val = data[main_col].iloc[0]
+                        end_val = data[main_col].iloc[-1]
+                        peak_val = data[main_col].max()
+                        avg_val = data[main_col].mean()
+                        trend_direction = "increased" if end_val > start_val else "decreased"
+
+                        trend_summary = f"The {main_col} has {trend_direction} from {start_val:.2f} at the start to {end_val:.2f} at the end, peaking at {peak_val:.2f}. The average value was {avg_val:.2f}."
+
+                except Exception as e:
+                    trend_summary = f"Could not compute trend analysis: {str(e)}"
+
+            prompt = (
+                f"Here is the preview data: {preview_data}. "
+                f"Here is a question: {user_question}. "
+                f"Errors detected: {error_string if error_string else 'None'}. "
+                f"Trend analysis: {trend_summary if trend_summary else 'No trend data detected.'} "
+                "Answer in one sentence."
+            )
+
             response = query({
-
-                "messages": [{"role": "user",
-                              "content": prompt}],
-
+                "messages": [{"role": "user", "content": prompt}],
                 "model": MODEL
-
             })
-            
+
             ai_response = response["choices"][0]["message"]["content"].replace("**", "").replace("*", "")
 
-            print(prompt)
+            return render_template(
+                'upload_success.html',
+                message=f"File received: {file.filename}. Question received: {user_question}",
+                filename=file.filename,
+                question=user_question,
+                sheet_names=sheet_names,
+                preview_data=preview_data.to_html(classes='data', header="true"),
+                ai_response=ai_response,
+                error=False
+            )
 
-            return render_template('upload_success.html', message=f"File received: {file.filename}. Question received: {user_question}", filename=file.filename, question=user_question, sheet_names=sheet_names, preview_data=preview_data.to_html(classes='data', header="true"), ai_response=ai_response, error=False)
+        else:
+            return render_template('upload_success.html', message="Invalid file type. Only .xlsx and .xls are allowed.", filename=file.filename if file else "", question=user_question, ai_response="Unavailable", error=True)
 
-        except Exception as e:
-            return render_template("upload_success.html", message=f"Error reading file: {str(e)}", filename=file.filename, question=user_question, ai_response="Unavailable", error=True)
-
-    else:
-        return render_template('upload_success.html', message="Invalid file type. Only .xlsx and .xls are allowed.", filename=file.filename if file else "", question=user_question, ai_response="Unavailable", error=True)
+    except Exception as e:
+        traceback.print_exc()
+        return render_template("upload_success.html", message=f"Internal Server Error: {str(e)}", filename="", question="", ai_response="Unavailable", error=True)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
