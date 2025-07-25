@@ -20,9 +20,11 @@ app = Flask(__name__)
 ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 MAX_FILE_SIZE = 5 * 1024 * 1024 
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    
 error_lookup={
     "#N/A": "Not available",
     "#VALUE!": "Invalid value",
@@ -34,7 +36,9 @@ error_lookup={
     "#NUM!":"Invalid number",
     "#CALC!":"Calculation Error"
 }
+
 error_code_list=list(error_lookup.keys())
+
 def scan_for_error(df: pd.DataFrame):
     error_string=""
     values = df.to_numpy()
@@ -42,15 +46,20 @@ def scan_for_error(df: pd.DataFrame):
     for row_idx, row in enumerate(values):
         for col_idx, value in enumerate(row):
             if value in error_code_list:
+                print("found error")
                 error_desc=error_lookup[value]
                 error_string += "Row "+ str(row_idx)+ " Column " + str(col_idx) + " Contains the error: " + str(error_desc)
+
+    print(error_string)
     return error_string
-#need to integrate it to the prompt template
+
 @app.route("/")
+
 def index():
     return render_template("index.html")
 
 @app.route("/upload", methods=["POST"])
+
 def upload_file():
     if "excel_file" not in request.files:
         return render_template('upload_success.html', message="No file part in the request.", filename="", question="", error=True)
@@ -81,7 +90,11 @@ def upload_file():
             sheet_names = pd.ExcelFile(file).sheet_names
             preview_data = data.head()
 
-            prompt = f"here is data: {preview_data} and here is a question about the data: {user_question}, keep your answer to 1 sentence. Just answer the question."
+            error_string = scan_for_error(preview_data)
+            
+            prompt = f"here is data: {preview_data} and here is a question about the data: {user_question}, keep your answer to 1 sentence. Just answer the question. Here are the following errors found in the data, mention these in your response: {error_string}, if there are no errors, just answer the question."
+
+            
             response = query({
 
                 "messages": [{"role": "user",
@@ -90,7 +103,10 @@ def upload_file():
                 "model": MODEL
 
             })
+            
             ai_response = response["choices"][0]["message"]["content"].replace("**", "").replace("*", "")
+
+            print(prompt)
 
             return render_template('upload_success.html', message=f"File received: {file.filename}. Question received: {user_question}", filename=file.filename, question=user_question, sheet_names=sheet_names, preview_data=preview_data.to_html(classes='data', header="true"), ai_response=ai_response, error=False)
 
