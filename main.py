@@ -93,6 +93,8 @@ def upload_file():
 
             error_string = scan_for_error(preview_data)
 
+            prompt = f"here is data: {data} and here is a question about the data: {user_question}, keep your answer to 1 sentence. Just answer the question. Here are the following errors found in the data, mention these in your response: {error_string}, if there are no errors, just answer the question."
+
 
             trend_summary = ""
             time_columns = [col for col in data.columns if "date" in col.lower() or "month" in col.lower() or "year" in col.lower()]
