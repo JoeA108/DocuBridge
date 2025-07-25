@@ -160,6 +160,7 @@
         }
     </style>
 </head>
+    
 <body>
     <div class="logo-container">
         <a href="/">
@@ -188,19 +189,20 @@
                 <p><strong>Chatbot:</strong> {{ ai_response }}</p>
             </div>
         {% endif %}
+        {% if question %}
+        <div class="form-container">
+            <h3>Ask Another Question:</h3>
+            <form method="POST" action="/followup" enctype="multipart/form-data">
+                <input type="hidden" name="filename" value="{{ filename }}">
+                <input type="hidden" name="previous_question" value="{{ question }}">
+                <textarea name="followup_question" placeholder="Enter your follow-up question here..." required></textarea>
+                <button type="submit" class="submit-btn">Submit Follow-Up Question</button>
+            </form>
+        </div>
+        {% endif %}
+
         <a href="/" class="btn">Return to Home</a>
     </div>
-
-    {% if sheet_names %}
-        <div class="sheet-section">
-            <h3>Available Sheets:</h3>
-            <ul class="sheet-list">
-                {% for sheet in sheet_names %}
-                    <li>{{ sheet }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
 
     {% if preview_data %}
         <div class="preview-section">
@@ -208,5 +210,6 @@
             <div>{{ preview_data | safe }}</div>
         </div>
     {% endif %}
+    
 </body>
 </html>
