@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <div class="logo-container">
-        <a href="/">
-            <img src="static/logo.png" alt="DocuBridge Logo" class="logo">
-        </a>
-    </div>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Status - ModelMind</title>
+    <title>DocuBridge Project</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f8f8f8;
@@ -22,26 +17,72 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+            text-align: center;
         }
         .logo {
-            text-align: center;
             height: 120px;
             width: auto;
             transition: all 0.3s ease;
         }
         h1 {
             text-align: center;
-            font-family: Arial, sans-serif;
             font-size: 2em;
-            margin-top: 0;
-            margin-bottom: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
             color: #333;
         }
-        .content-container {
+        p.heading-subtext {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .form-container, .content-container {
             background-color: #938ade;
             padding: 20px;
             border-radius: 8px;
             margin-top: 20px;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="file"], input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .submit-btn, .btn {
+            background-color: #3b3575;
+            color: #f0f0f0;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .submit-btn:hover, .btn:hover {
+            background-color: #2f2b5f;
+        }
+        .file-note {
+            font-size: 12px;
+            color: #000;
+            margin-top: 5px;
         }
         .alert {
             padding: 16px;
@@ -57,22 +98,6 @@
         .alert.error {
             background-color: #f8d7da;
             color: #721c24;
-        }
-        .btn {
-            background-color: #3b3575;
-            color: #f0f0f0;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-block;
-            margin: 10px 0;
-        }
-        .btn:hover {
-            background-color: #2f2b5f;
         }
         .chatbot {
             background-color: #f0f0f0;
@@ -93,10 +118,56 @@
         .details p {
             margin-bottom: 8px;
         }
+        .sheet-section, .preview-section {
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .sheet-section h3, .preview-section h3 {
+            color: #3b3575;
+            margin-bottom: 10px;
+        }
+        .sheet-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .sheet-list li {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #3b3575;
+        }
+        .preview-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .preview-section th, .preview-section td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .preview-section th {
+            background-color: #938ade;
+            color: white;
+        }
     </style>
 </head>
 <body>
+    <div class="logo-container">
+        <a href="/">
+            <img src="static/logo.png" alt="ModelMind Logo" class="logo">
+        </a>
+    </div>
     <h1>ModelMind</h1>
+    <p class="heading-subtext">Upload Excel financial models and ask questions about them, receiving AI-powered answers.</p>
 
     <div class="content-container">
         {% if error %}
@@ -113,29 +184,29 @@
             {% endif %}
         {% else %}
             <div class="alert success">{{ message }}</div>
-            <div class="details">
-                <p><strong>File Name:</strong> {{ filename }}</p>
-                <p><strong>Your Question:</strong> {{ question }}</p>
-            </div>
             <div class="chatbot">
                 <p><strong>Chatbot:</strong> {{ ai_response }}</p>
             </div>
         {% endif %}
         <a href="/" class="btn">Return to Home</a>
     </div>
-    <div class="content-container">
-        {% if sheet_names %}
+
+    {% if sheet_names %}
+        <div class="sheet-section">
             <h3>Available Sheets:</h3>
-            <ul>
+            <ul class="sheet-list">
                 {% for sheet in sheet_names %}
-                    <li>{{ filename }}</li>
+                    <li>{{ sheet }}</li>
                 {% endfor %}
             </ul>
-        {% endif %}
-        {% if preview_data %}
+        </div>
+    {% endif %}
+
+    {% if preview_data %}
+        <div class="preview-section">
             <h3>Data Preview:</h3>
             <div>{{ preview_data | safe }}</div>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </body>
 </html>
