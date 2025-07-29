@@ -155,9 +155,11 @@ def upload_file():
             prompt = (
                 f"Here is the data: {data}. "
                 f"Here is a question about the data: {user_question}. "
-                f"Errors detected: {error_string if error_string else 'None'}. if there are none just answer the question."
+                f"Errors detected: {error_string if error_string else 'None'} If there are no errors, and the question requires a mathematical calculation (e.g., sum, difference, product, quotient, average, percentage)," 
+                 f"identify the relevant numerical columns and perform the necessary operation(s) to answer the question. Don't show how you did that calculation just give the answer. "  
+                f"Ensure to handle cases like division by zero appropriately by stating it's undefined or not applicable. " 
                 f"Trend analysis: {trend_summary if trend_summary else 'No trend data detected.'} "
-                "Answer in one sentence."
+                "Analyze the data and answer the question in a single concise sentence, including all necessary calculations and their results." 
             )
 
             print(prompt)
@@ -222,9 +224,16 @@ def followup_question():
             f"Here is the previous data: {data}. "
             f"Previous question was: {previous_question}. "
             f"Follow-up question: {followup_question}."
-            f"Errors detected: {error_string if error_string else 'None'}. Mention these in your response, if there are none just answer the question."
-            "Provide an answer in one sentence."
-        )
+            f"Errors detected: {error_string if error_string else 'None'}. Mention these in your answer"
+            f"If there are no errors, and the question requires a mathematical calculation (e.g., sum, difference, product, quotient, average, percentage), " 
+
+                 f"identify the relevant numerical columns and perform the necessary operation(s) to answer the question. Don't show how you did that calculation just give the answer. "  
+
+                 f"Ensure to handle cases like division by zero appropriately by stating it's undefined or not applicable. "  
+
+                 "Analyze the data and answer the question in a single concise sentence, including all necessary calculations and their results." 
+
+             ) 
 
         response = query({"messages": [{"role": "user", "content": prompt}],
                         "model": MODEL
