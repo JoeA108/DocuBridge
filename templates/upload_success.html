@@ -79,6 +79,13 @@
         .submit-btn:hover, .btn:hover {
             background-color: #2f2b5f;
         }
+        /* Loading state for both .submit-btn and .btn */
+        .submit-btn.loading, .btn.loading {
+            background-color: #2f2b5f;
+            cursor: not-allowed;
+            opacity: 0.8;
+            pointer-events: none; /* Prevent clicks while loading */
+        }
         .file-note {
             font-size: 12px;
             color: #000;
@@ -160,7 +167,6 @@
         }
     </style>
 </head>
-    
 <body>
     <div class="logo-container">
         <a href="/">
@@ -192,16 +198,16 @@
         {% if question %}
         <div class="form-container">
             <h3>Ask Another Question:</h3>
-            <form method="POST" action="/followup" enctype="multipart/form-data">
+            <form id="followupForm" method="POST" action="/followup" enctype="multipart/form-data">
                 <input type="hidden" name="filename" value="{{ filename }}">
                 <input type="hidden" name="previous_question" value="{{ question }}">
                 <textarea name="followup_question" placeholder="Enter your follow-up question here..." required></textarea>
-                <button type="submit" class="submit-btn">Submit Follow-Up Question</button>
+                <button type="submit" id="followupSubmitBtn" class="submit-btn">Submit Follow-Up Question</button>
             </form>
         </div>
         {% endif %}
 
-        <a href="/" class="btn">Return to Home</a>
+        <a href="/" id="homeBtn" class="btn">Return to Home</a>
     </div>
 
     {% if preview_data %}
@@ -210,6 +216,26 @@
             <div>{{ preview_data | safe }}</div>
         </div>
     {% endif %}
-    
+
+    <script>
+        const followupForm = document.getElementById('followupForm');
+        const followupSubmitBtn = document.getElementById('followupSubmitBtn');
+        const homeBtn = document.getElementById('homeBtn');
+
+        if (followupForm) {
+            followupForm.addEventListener('submit', function() {
+                followupSubmitBtn.textContent = 'Loading...';
+                followupSubmitBtn.classList.add('loading');
+                followupSubmitBtn.disabled = true;
+            });
+        }
+
+        if (homeBtn) {
+            homeBtn.addEventListener('click', function() {
+                homeBtn.textContent = 'Loading...';
+                homeBtn.classList.add('loading');
+            });
+        }
+    </script>
 </body>
 </html>
