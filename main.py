@@ -6,6 +6,7 @@ import requests
 from flask import Flask, render_template, request, session
 
 # Define the model to be used for AI queries
+
 MODEL = "meta-llama/Llama-3.1-8B-Instruct:novita"
 
 # Set the API URL for AI responses
@@ -191,7 +192,7 @@ def upload_file():
         traceback.print_exc()
         # Render an error template if any exception occurs during processing
         return render_template("upload_success.html", 
-                               message=f"Internal Server Error: {str(e)}", 
+                               message=f"AI Error: {str(e)}", 
                                filename="", 
                                question="", 
                                ai_response="Unavailable", 
@@ -239,7 +240,7 @@ def followup_question():
     except Exception as e:
         traceback.print_exc()
         return render_template("upload_success.html", 
-                                message=f"Internal Server Error: {str(e)}", 
+                                message=f"AI Error: {str(e)}", 
                                 filename='', 
                                 question='', 
                                 ai_response="Unavailable", 
