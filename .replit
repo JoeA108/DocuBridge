@@ -1,4 +1,4 @@
-run = "gunicorn --bind 0.0.0.0:5000 main:app"
+run = "gunicorn --bind 0.0.0.0:5000 main:app --timeout 120"
 modules = ["web", "python-3.11"]
 
 hidden = [".pythonlibs"]

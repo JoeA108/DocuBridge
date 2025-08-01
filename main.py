@@ -1,13 +1,22 @@
 import os
 import traceback
 
+import re
 import pandas as pd
 import requests
 from flask import Flask, render_template, request, session
 
-# Define the model to be used for AI queries
 
-MODEL = "meta-llama/Llama-3.1-8B-Instruct:novita"
+# ---------- MODELS ----------
+
+#MODEL = "Qwen/Qwen3-235B-A22B-Thinking-2507:novita"  
+        #-Qwen, very good, limited monthly usage
+
+MODEL = "deepseek-ai/DeepSeek-R1:novita"  
+        #-Deepseek, maths is quite good, smaller, a bit inaccurate, slow in some instances
+
+# ----------------------------
+
 
 # Set the API URL for AI responses
 API_URL = "https://router.huggingface.co/v1/chat/completions"
@@ -20,7 +29,12 @@ headers = {
 # Function to query the AI API
 def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
-    return response.json()["choices"][0]["message"]["content"].replace("**", "").replace("*", "")
+    print(response.json())
+    cleaned_response = re.sub(r'<think>.*?</think>', '', 
+                                response.json()["choices"][0]["message"]["content"],                          
+                                flags=re.DOTALL
+                              )
+    return cleaned_response
         
 # Initialize the Flask web application
 app = Flask(__name__)
@@ -155,11 +169,11 @@ def upload_file():
             prompt = (
                 f"Here is the data: {data}. "
                 f"Here is a question about the data: {user_question}. "
-                f"Errors detected: {error_string if error_string else 'None'} If there are no errors, and the question requires a mathematical calculation (e.g., sum, difference, product, quotient, average, percentage)," 
-                 f"identify the relevant numerical columns and perform the necessary operation(s) to answer the question. Don't show how you did that calculation just give the answer. "  
-                f"Ensure to handle cases like division by zero appropriately by stating it's undefined or not applicable. " 
+                f"Errors detected: {error_string if error_string else 'None'} If there are no errors, don't mention that unless prompted."  
+                "Ensure to handle cases like division by zero appropriately by stating it's undefined or not applicable. " 
                 f"Trend analysis: {trend_summary if trend_summary else 'No trend data detected.'} "
-                "Analyze the data and answer the question in a single concise sentence, including all necessary calculations and their results." 
+                "Don't show how you did that calculation just give the answer. Answer the question in a single concise sentence."
+                "If asked how to do something make this concise and simple."
             )
 
             print(prompt)
@@ -224,15 +238,11 @@ def followup_question():
             f"Here is the previous data: {data}. "
             f"Previous question was: {previous_question}. "
             f"Follow-up question: {followup_question}."
-            f"Errors detected: {error_string if error_string else 'None'}. Mention these in your answer"
-            f"If there are no errors, and the question requires a mathematical calculation (e.g., sum, difference, product, quotient, average, percentage), " 
-
-                 f"identify the relevant numerical columns and perform the necessary operation(s) to answer the question. Don't show how you did that calculation just give the answer. "  
-
-                 f"Ensure to handle cases like division by zero appropriately by stating it's undefined or not applicable. "  
-
-                 "Analyze the data and answer the question in a single concise sentence, including all necessary calculations and their results." 
-
+            f"Errors detected: {error_string if error_string else 'None'} If there are no errors, don't mention that unless prompted."  
+            "Ensure to handle cases like division by zero appropriately by stating it's undefined or not applicable. " 
+            #f"Trend analysis: {trend_summary if trend_summary else 'No trend data detected.'} "
+            "Don't show how you did that calculation just give the answer. Answer the question in a single concise sentence."
+            "If asked how to do something make this concise and simple."
              ) 
 
         response = query({"messages": [{"role": "user", "content": prompt}],
@@ -246,10 +256,10 @@ def followup_question():
                                ai_response=response,
                                error=False
                                )
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return render_template("upload_success.html", 
-                                message=f"AI Error: {str(e)}", 
+                                message="AI Error, please try again later", 
                                 filename='', 
                                 question='', 
                                 ai_response="Unavailable", 
