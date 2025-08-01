@@ -216,6 +216,14 @@
         <a href="/" id="homeBtn" class="btn">Return to Home</a>
     </div>
 
+    {% if chart_img %}
+    <div class="chart-section" style="margin-top:20px; text-align:center;">
+        <h3 style="color:#3b3575;">Trend Chart</h3>
+        <img src="data:image/png;base64,{{ chart_img }}" alt="Trend Chart" style="max-width:100%; border:1px solid #ccc; border-radius:8px;"/>
+    </div>
+    {% endif %}
+
+    
     {% if preview_data %}
         <div class="preview-section">
             <h3>Data Preview:</h3>

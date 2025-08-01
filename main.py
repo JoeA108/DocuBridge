@@ -6,6 +6,12 @@ import pandas as pd
 import requests
 from flask import Flask, render_template, request, session
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+import base64
+
 
 # ---------- MODELS ----------
 
@@ -164,6 +170,27 @@ def upload_file():
                         trend_summary = f"The {main_col} has {trend_direction} from {start_val:.2f} at the start to {end_val:.2f} at the end, peaking at {peak_val:.2f}. The average value was {avg_val:.2f}."
                 except Exception as e:
                     trend_summary = f"Could not compute trend analysis: {str(e)}"
+
+            chart_img = None
+            if time_columns:
+                try:
+                    # Generate trend chart
+                    plt.figure(figsize=(6, 4))
+                    plt.plot(data[time_col], data[main_col], marker='o', color='#3b3575')
+                    plt.title(f"Trend of {main_col} Over Time", fontsize=14)
+                    plt.xlabel(time_col.capitalize())
+                    plt.ylabel(main_col.capitalize())
+                    plt.grid(True)
+                    plt.tight_layout()
+
+                    # Save to base64
+                    img = io.BytesIO()
+                    plt.savefig(img, format='png')
+                    img.seek(0)
+                    chart_img = base64.b64encode(img.getvalue()).decode('utf-8')
+                    plt.close()
+                except Exception as e:
+                    chart_img = None
                         
             # Construct the prompt for querying the AI
             prompt = (
@@ -192,6 +219,7 @@ def upload_file():
                                     sheet_names=sheet_names,
                                     preview_data=preview_data.to_html(classes='data', header=True),
                                     ai_response=response,
+                                    chart_img=chart_img,
                                     error=False
                                     )
         
