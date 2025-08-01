@@ -91,6 +91,11 @@
             color: #000;
             margin-top: 5px;
         }
+        .submit-note {
+            font-size: 12px;
+            color: #544a9e;
+            margin-top: 5px;
+        }
         .alert {
             padding: 16px;
             margin: 20px 0;
@@ -202,7 +207,8 @@
                 <input type="hidden" name="filename" value="{{ filename }}">
                 <input type="hidden" name="previous_question" value="{{ question }}">
                 <textarea name="followup_question" placeholder="Enter your follow-up question here..." required></textarea>
-                <button type="submit" id="followupSubmitBtn" class="submit-btn">Submit Follow-Up Question</button>
+                <button type="submit" id="followupSubmitBtn" class="submit-btn">Submit Follow-Up</button>
+                <div class="submit-note">Disclaimer: may take up to 120s depending on complexity of question.</div>
             </form>
         </div>
         {% endif %}
