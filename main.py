@@ -108,8 +108,8 @@ def upload_file():
                                     error=True
                                   )
             
-        file = request.files["excel_file"]
-        user_question = request.form.get("user_question")
+        file = request.files["excel_file"] # Get the uploaded file
+        user_question = request.form.get("user_question") # Get the user's question
                 
         # Check if the user has provided a question
         if not user_question:
@@ -142,15 +142,16 @@ def upload_file():
             # Read the Excel file into a DataFrame and get sheet names
             data = pd.read_excel(file)
             print(data)
-            session["data"] = str(data)
+            session["data"] = str(data) # Store data in session for follow-up
             sheet_names = pd.ExcelFile(file).sheet_names
             preview_data = data.head()
                 
             # Scan for errors in the preview DataFrame and construct a prompt for the AI
             error_string = scan_for_error(preview_data)
-            session["error_string"] = error_string
+            session["error_string"] = error_string # Store error string in session for follow-up
             
             trend_summary = ""
+            chart_img = None
                 
             # Identify potential time-related columns for trend analysis
             time_columns = [col for col in data.columns if "date" in col.lower() or "month" in col.lower() or "year" in col.lower()]
@@ -168,29 +169,26 @@ def upload_file():
                         avg_val = data[main_col].mean()
                         trend_direction = "increased" if end_val > start_val else "decreased"
                         trend_summary = f"The {main_col} has {trend_direction} from {start_val:.2f} at the start to {end_val:.2f} at the end, peaking at {peak_val:.2f}. The average value was {avg_val:.2f}."
+                        
+                        # Generate trend chart
+                        plt.figure(figsize=(6, 4))
+                        plt.plot(data[time_col], data[main_col], marker='o', color='#3b3575')
+                        plt.title(f"Trend of {main_col} Over Time", fontsize=14)
+                        plt.xlabel(time_col.capitalize())
+                        #plt.ylabel(main_col)
+                        plt.grid(True)
+                        plt.tight_layout()
+
+                        # Save to base64
+                        img = io.BytesIO()
+                        plt.savefig(img, format='png')
+                        img.seek(0)
+                        chart_img = base64.b64encode(img.getvalue()).decode('utf-8')
+                        plt.close()
                 except Exception as e:
                     trend_summary = f"Could not compute trend analysis: {str(e)}"
-
-            chart_img = None
-            if time_columns:
-                try:
-                    # Generate trend chart
-                    plt.figure(figsize=(6, 4))
-                    plt.plot(data[time_col], data[main_col], marker='o', color='#3b3575')
-                    plt.title(f"Trend of {main_col} Over Time", fontsize=14)
-                    plt.xlabel(time_col.capitalize())
-                    plt.ylabel(main_col.capitalize())
-                    plt.grid(True)
-                    plt.tight_layout()
-
-                    # Save to base64
-                    img = io.BytesIO()
-                    plt.savefig(img, format='png')
-                    img.seek(0)
-                    chart_img = base64.b64encode(img.getvalue()).decode('utf-8')
-                    plt.close()
-                except Exception as e:
                     chart_img = None
+
                         
             # Construct the prompt for querying the AI
             prompt = (
@@ -206,10 +204,9 @@ def upload_file():
             print(prompt)
             
             # Query the AI with the created prompt and retrieve the response
-            response = query({
-                "messages": [{"role": "user", "content": prompt}],
-                "model": MODEL
-            })
+            response = query({"messages": [{"role": "user", "content": prompt}],
+                            "model": MODEL
+                            })
                 
             # Render the success template with the relevant information
             return render_template('upload_success.html',

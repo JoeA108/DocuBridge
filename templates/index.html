@@ -93,11 +93,15 @@
     <div class="form-container">
         <h2>Upload Excel File & Ask Question</h2>
         <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
+
+            
             <div class="form-group">
                 <label for="excel_file">Upload Excel File</label>
                 <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
                 <div class="file-note">Accepted file types: .xlsx, .xls</div>
-            </div>
+            </div> 
+
+            
             <div class="form-group">
                 <label for="user_question">Your Question: </label>
                 <textarea id="user_question" name="user_question" placeholder="Enter your question about the Excel file here..." required></textarea>
