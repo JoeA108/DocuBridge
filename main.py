@@ -130,14 +130,11 @@ def upload_file():
             # Check file size against the maximum allowed
             if file_size > MAX_FILE_SIZE:
                 return render_template('upload_success.html', 
-                                        message=f"File too large. Maximum size is {MAX_FILE_SIZE / (1024 * 1024):.0f} MB.", 
+                                        message=f"File too large, please try uploading a smaller file. Maximum size is {MAX_FILE_SIZE / (1024 * 1024):.0f} MB.", 
                                         filename=file.filename, 
                                         question=user_question, 
                                         error=True
                                       )
-                
-            print(f"File received: {file.filename}")
-            print(f"Question received: {user_question}")
                 
             # Read the Excel file into a DataFrame and get sheet names
             data = pd.read_excel(file)
@@ -222,18 +219,18 @@ def upload_file():
         
         else:
             return render_template('upload_success.html', 
-                                   message="Invalid file type. .xlsx and .xls. only. ", 
-                                   filename=file.filename if file else "", 
-                                   question=user_question, 
+                                   message="Invalid file type. Try .xlsx or .xls. instead. ", 
+                                   filename="", 
+                                   question="", 
                                    ai_response="Unavailable", 
                                    error=True
                                    )
                 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         # Render an error template if any exception occurs during processing
         return render_template("upload_success.html", 
-                               message=f"AI Error: {str(e)}", 
+                               message="There was a problem with the AI model, please try again later.", 
                                filename="", 
                                question="", 
                                ai_response="Unavailable", 
@@ -284,7 +281,7 @@ def followup_question():
     except Exception:
         traceback.print_exc()
         return render_template("upload_success.html", 
-                                message="AI Error, please try again later", 
+                                message="There was a problem with the AI model, please try again later.", 
                                 filename='', 
                                 question='', 
                                 ai_response="Unavailable", 
