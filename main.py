@@ -93,7 +93,7 @@ def upload_file():
         # Check if the file part exists in the request
         if "excel_file" not in request.files:
             return render_template('upload_success.html', 
-                                    message="No file part in the request.", 
+                                    message="No file part in the request, please submit a file before asking a question.", 
                                     filename="", 
                                     question="", 
                                     error=True
@@ -105,7 +105,7 @@ def upload_file():
         # Check if the user has provided a question
         if not user_question:
             return render_template('upload_success.html', 
-                                    message="No question provided.", 
+                                    message="No question provided, please try typing a question into the text area.", 
                                     filename="", 
                                     question="", 
                                     error=True
@@ -210,7 +210,7 @@ def upload_file():
         
         else:
             return render_template('upload_success.html', 
-                                   message="Invalid file type. Try .xlsx or .xls. instead. ", 
+                                   message="Invalid file type, please try .xlsx or .xls. instead. ", 
                                    filename="", 
                                    question="", 
                                    ai_response="Unavailable", 
@@ -240,7 +240,7 @@ def followup_question():
 
         if not followup_question:
             return render_template('upload_success.html',
-                                   message="No follow-up question provided.",
+                                   message="No follow-up question provided, please try entering a follow up question in the text area.",
                                    filename=filename,
                                    question=previous_question,
                                    error=True
