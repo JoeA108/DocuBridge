@@ -12,17 +12,8 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
-
-# ---------- MODELS ----------
-
-#MODEL = "Qwen/Qwen3-235B-A22B-Thinking-2507:novita"  
-        #-Qwen, very good, limited monthly usage
-
+# Set the model to be used for AI responses
 MODEL = "deepseek-ai/DeepSeek-R1:novita"  
-        #-Deepseek, maths is quite good, smaller, a bit inaccurate, slow in some instances
-
-# ----------------------------
-
 
 # Set the API URL for AI responses
 API_URL = "https://router.huggingface.co/v1/chat/completions"
