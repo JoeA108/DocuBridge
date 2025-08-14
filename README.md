@@ -13,9 +13,6 @@ Once set up, upload a file and try some example questions:
 - "What is the percentage change in ___ from ___ to ___?"
 - "What is the average value of ___ between ___ and ___?" 
 
-Screenshots or GIF:
-
-
 Architecture Diagram:
 
 ![image](image.png)
